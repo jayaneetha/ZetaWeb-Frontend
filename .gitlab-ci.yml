@@ -1,3 +1,7 @@
+stages:
+  - build
+  - publish
+
 build:
   image: node:latest
   stage: build
@@ -18,7 +22,7 @@ build:
 docker-build:
   # Use the official docker image.
   image: docker:latest
-  stage: build
+  stage: publish
   dependencies:
     - build
   services:
