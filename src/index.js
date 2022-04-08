@@ -1,13 +1,17 @@
+// Import jQuery
 var jquery = require("jquery");
 window.$ = window.jQuery = jquery;
 
-// Import all plugins
+// Import Bootstrap
 import * as bootstrap from 'bootstrap';
 
-// Or import only needed plugins
-// import { Tooltip as Tooltip, Toast as Toast, Popover as Popover } from 'bootstrap';
-// Or import just one
-// import Alert as Alert from '../node_modules/bootstrap/js/dist/alert';
+// initialize boostrap tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
+// Import amCharts
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
