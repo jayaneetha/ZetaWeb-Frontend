@@ -3,7 +3,7 @@ stages:
   - publish
 
 build:
-  image: node:latest
+  image: node:12.22.10
   stage: build
   artifacts:
     paths:
@@ -30,7 +30,7 @@ docker-build:
   before_script:
     - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
   script:
-    - docker build --pull -t "jayaneetha/images:zeta-policy-baseline" .
+    - docker build --pull -t "jayaneetha/images:zeta-web-frontend" .
     - docker push "jayaneetha/images:zeta-web-frontend"
   # Run this job in a branch where a Dockerfile exists
   rules:
