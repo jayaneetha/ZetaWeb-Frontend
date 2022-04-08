@@ -1,0 +1,35 @@
+build:
+  image: node:latest
+  stage: build
+  artifacts:
+    paths:
+      - ./build
+    expire_in: 5 days
+  script:
+    - npm install
+    - npm run build
+  # Run this job in a branch where a package.json exists
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - package.json
+
+
+docker-build:
+  # Use the official docker image.
+  image: docker:latest
+  stage: build
+  dependencies:
+    - build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+  script:
+    - docker build --pull -t "jayaneetha/images:zeta-policy-baseline" .
+    - docker push "jayaneetha/images:zeta-web-frontend"
+  # Run this job in a branch where a Dockerfile exists
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
