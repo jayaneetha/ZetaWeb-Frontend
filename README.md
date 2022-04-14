@@ -11,8 +11,9 @@ Feedback for the supervised learning module is also taken to measure the perform
 
 1. Clone the repository
 2. `npm install`
-3. `npm start` to build and start the development server
-4. `npm build` will build the minified, production ready files where you can deploy in a Apache/Nginx server as static
+3. `npm run start` to build and start the development server
+4. `npm run build` will build the minified, production ready files where you can deploy in a Apache/Nginx server as
+   static
    files.
 
 ## Development Dependencies

@@ -99,7 +99,7 @@ $(document).ready(function () {
     root.container.children.clear();
 
     const settings = {
-      "url": BACKEND_URL + "/performance",
+      "url": BACKEND_URL + "/performance?limit=20",
       "method": "GET",
       "timeout": 0,
       "headers": {
@@ -116,8 +116,14 @@ $(document).ready(function () {
       }));
 
       // Define data
-      var data = r;
-
+      r.sort((a, b) => {
+        return a['episode'] - b['episode']
+      });
+      console.log(r)
+      // const res = $.parseJSON(r)
+      // console.log(res);
+      // var data = res['accuracies'];
+      const data = r;
 
       // Craete Y-axis
       let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
@@ -135,14 +141,18 @@ $(document).ready(function () {
         name: "RL Model",
         xAxis: xAxis,
         yAxis: yAxis,
-        valueYField: "rl",
+        valueYField: "rl_accuracy",
         categoryXField: "episode",
         tooltip: am5.Tooltip.new(root, {})
       }));
       series1.data.setAll(data);
 
       var series2 = chart.series.push(am5xy.LineSeries.new(root, {
-        name: "SL Model", xAxis: xAxis, yAxis: yAxis, valueYField: "sl", categoryXField: "episode"
+        name: "SL Model",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "sl_accuracy",
+        categoryXField: "episode"
       }));
       series2.data.setAll(data);
 
