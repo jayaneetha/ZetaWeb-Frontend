@@ -138,6 +138,7 @@ $(document).ready(function () {
 
       // Create series
       var series1 = chart.series.push(am5xy.LineSeries.new(root, {
+        stroke: am5.color('#0D84A5'),
         name: "RL Model",
         xAxis: xAxis,
         yAxis: yAxis,
@@ -147,7 +148,12 @@ $(document).ready(function () {
       }));
       series1.data.setAll(data);
 
+      series1.strokes.template.setAll({
+        strokeWidth: 2
+      });
+
       var series2 = chart.series.push(am5xy.LineSeries.new(root, {
+        stroke: am5.color('#FEA056'),
         name: "SL Model",
         xAxis: xAxis,
         yAxis: yAxis,
@@ -155,6 +161,11 @@ $(document).ready(function () {
         categoryXField: "episode"
       }));
       series2.data.setAll(data);
+
+      series2.strokes.template.setAll({
+        strokeWidth: 2
+      });
+
 
       // Add legend
       var legend = chart.children.push(am5.Legend.new(root, {}));
