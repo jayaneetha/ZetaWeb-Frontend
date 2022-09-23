@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
-    "sass": "^1.50.0"
+    "sass": "^1.55.0"
   },
   "dependencies": {
     "@amcharts/amcharts5": "5.1.12",

@@ -2,112 +2,169 @@
 <html class="no-js" lang="">
 
 <head>
-  <meta charset="utf-8">
-  <title>Zeta Web</title>
-  <meta content="" name="description">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="utf-8">
+    <title>Zeta Web</title>
+    <meta content="" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
 
-  <meta content="" property="og:title">
-  <meta content="" property="og:type">
-  <meta content="" property="og:url">
-  <meta content="" property="og:image">
+    <meta content="" property="og:title">
+    <meta content="" property="og:type">
+    <meta content="" property="og:url">
+    <meta content="" property="og:image">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
 
-  <link href="../sass/custom.sass" rel="stylesheet">
-
-  <meta content="#fafafa" name="theme-color">
+    <link href="../sass/custom.sass" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/">
+    <meta content="#fafafa" name="theme-color">
 </head>
 
 <body>
 
 <div class="container mt-3">
-  <div class="row mb-5">
-    <div class="col-md-12">
-      <div class="page-header">
-        <h1>
-          Zeta - Web
-        </h1>
-        <h3>
-          Automated speech emotion classification training portal
-        </h3>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="record-audio visible">
-        <h4>Audio Input</h4>
-        <form id="frmFileUpload" role="form">
-          <div class="form-group mb-3">
-            <label for="audioFile" class="form-label">Audio File</label>
-            <input class="form-control-file form-control" id="audioFile" name="audioFile" required type="file"/>
-          </div>
-          <button class="btn btn-primary" id="btnUpload" type="button">
-            Upload
-          </button>
-        </form>
-      </div>
-      <div class="inference-results hidden">
-        <h4>Inference Results</h4>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card p-2">
-              <div class="card-body">
-                <h5 class="card-title">Reinforcement Learning Prediction</h5>
-                <p class="card-text"><span id="spanRLEmotion">Happy</span></p>
-              </div>
-              <div class="card-footer mt-2">
-                <div class="btn-group">
-                  <button class="btn btn-success btnRL btnFeedback"
-                          data-feedback="true" data-model="RL" type="button">
-                    Correct
-                  </button>
-                  <button class="btn btn-danger btnRL btnFeedback" data-feedback="false" data-model="RL" type="button">
-                    Wrong
-                  </button>
-                </div>
-              </div>
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>
+                    Zeta - Web
+                </h1>
+                <h3>
+                    Automated speech emotion classification training portal
+                </h3>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card p-2">
-              <div class="card-body">
-                <h5 class="card-title">Supervised Learning Prediction</h5>
-                <p class="card-text"><span id="spanSLEmotion">Happy</span></p>
-              </div>
-              <div class="card-footer mt-2">
-                <div class="btn-group">
-                  <button class="btn btn-success btnSL btnFeedback" data-feedback="true" data-model="SL" type="button"
-                          title="Used to calculate SL Model performance" data-bs-placement="top"
-                          data-bs-toggle="tooltip">
-                    Correct
-                  </button>
-                  <button class="btn btn-danger btnSL btnFeedback" data-feedback="false" data-model="SL" type="button"
-                          title="Used to calculate SL Model performance" data-bs-placement="top"
-                          data-bs-toggle="tooltip">
-                    Wrong
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-    <div class="col-md-6">
-      <h4>Accuracy <small>Metric change</small></h4>
-      <div class="card" id="chartdiv" style="height: 300px; overflow: hidden;"></div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Experience Reinforcement Learning based Domain adaptation in action with two easy steps</h4>
+                    <ol class="steps">
+                        <li>Record two second audio segment</li>
+                        <li>View results and give feedback</li>
+                    </ol>
+                    <img src="img/diagram.png" alt="" width="100%">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div id="step-1" class="visible">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Record two second speech audio</h4>
+                        <div class="record_button" id="btnStartRecording">
+                            <img src="img/record_btn.png" alt="">
+                            <br>
+                            <span>Record</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Avoid recording sensitive information in to
+                            the audio segment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="step-2" class="hidden">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Record two second speech audio</h4>
+                        <div class="record_button" id="btnStopRecording">
+                            <img src="img/stop_recording_btn.png" alt="">
+                            <br>
+                            <span>Recording...</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Avoid recording sensitive information in to
+                            the audio segment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-3" class="hidden">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Upload the recorded Audio</h4>
+                        <div class="record_button" id="btnUploadRecording">
+                            <img src="img/upload_btn.png" alt="">
+                            <br>
+                            <span>Upload</span>
+                        </div>
+
+                        <div class="playback text-center">
+                            <span>Recorded Audio</span><br>
+                            <audio src="" controls id="audio-playback"></audio>
+                        </div>
+
+
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Avoid recording sensitive information in to
+                            the
+                            audio segment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="step-4" class="hidden">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Upload the recorded Audio</h4>
+                        <div class="record_button" id="btnUploading">
+                            <img src="img/upload_btn.png" alt="">
+                            <br>
+                            <span>Uploading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="step-5" class="visible">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">View Results and give feedback</h4>
+                        <div class="text-center rl_results">
+                            <span>Emotion of the recorded audio segment is identified as</span>
+                            <h5 id="rl_emotion_result">Happy 😄</h5>
+
+                            <h4 class="card-title mt-5">Give your feedback</h4>
+                            <div class="">
+                                <img class="feedbackBtn" id="thumbsUp" src="img/up.png" alt="">
+                                <img class="feedbackBtn" id="thumbsDown" src="img/down.png" alt="">
+                            </div>
+                        </div>
+                        <div class="text-center sl_results">
+                            <h4 class="card-title mt-md-5 mt-sm-3">Results of the supervised learning model</h4>
+                            <span>The supervised learning model identified the emotion of the audio segment as</span>
+                            <h5 id="sl_emotion_result">Neutral 😐</h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-  </div>
+
+
 </div>
+˚
 
 <script src="index.js" type="text/javascript"></script>
-
+<div class="footer fixed-bottom bg-dark">
+    <div class="container text-center">
+        <span class="text-light"><i class="bi bi-info-circle"></i> As Reinforcement Learning algorithms need significant amount of instances to re-train the model, we will only be re-training the model after collecting abundant amount of training data and Feature embedding of the recorded audio is stored until the model is re-trained. </span>
+    </div>
+</div>
 </body>
 
 </html>
