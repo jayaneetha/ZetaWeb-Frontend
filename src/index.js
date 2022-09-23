@@ -8,171 +8,122 @@ import * as bootstrap from 'bootstrap';
 // initialize boostrap tooltips
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
+    return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
-// Import amCharts
-import * as am5 from "@amcharts/amcharts5";
-import * as am5xy from "@amcharts/amcharts5/xy";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-
-const BACKEND_URL = "http://127.0.0.1:8000"
+const BACKEND_URL = "http://rlemotion.cloud.edu.au:8080"
 
 const emotion_map = {
-  'hap': 'Happy 😊',
-  'sad': "Sad 😞️",
-  'ang': 'Angry 😡',
-  'neu': "Neutral 😐"
+    'hap': 'Happy 😊',
+    'sad': "Sad 😞️",
+    'ang': 'Angry 😡',
+    'neu': "Neutral 😐"
 }
 
 $(document).ready(function () {
-  // Create root and chart
-  let root = am5.Root.new("chartdiv");
 
-  let feedback_submissions = 0;
+    let recorder, audio_stream;
+    let chunks = [];
+    const preview = document.getElementById("audio-playback");
+    let audioId = undefined
 
-  $('#btnUpload').click(function (e) {
-    const form = new FormData(document.querySelector('#frmFileUpload'))
+    function showStep(step) {
+        for (let i = 0; i < 6; i++) {
+            if (i !== step) {
+                $('#step-' + i).removeClass('visible').addClass('hidden');
+            }
+        }
+        $('#step-' + step).removeClass('hidden').addClass('visible');
+    }
 
-    const settings = {
-      "url": BACKEND_URL + "/uploadfile",
-      "method": "POST",
-      "timeout": 0,
-      "processData": false,
-      "mimeType": "multipart/form-data",
-      "contentType": false,
-      "data": form
-    };
+    function startRecording() {
+        navigator.mediaDevices.getUserMedia({audio: true})
+            .then(function (stream) {
+                audio_stream = stream;
 
-    $.ajax(settings).done(function (response) {
-      const res = $.parseJSON(response)
-      sessionStorage.setItem('audio_id', res['audio_id']);
-      $("#spanRLEmotion").html(emotion_map[res['rl_emotion']]);
-      $("#spanSLEmotion").html(emotion_map[res['sl_emotion']]);
+                recorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
 
-      $('.record-audio').removeClass('visible').addClass('hidden');
-      $('.inference-results').removeClass('hidden').addClass('visible');
+                // when there is data, compile into object for preview src
+                recorder.ondataavailable = function (e) {
+                    preview.src = URL.createObjectURL(e.data);
+                    chunks.push(e.data);
+                };
+                recorder.start();
+
+                setTimeout(function () {
+                    console.log("2 sec timeout");
+                    stopRecording();
+                }, 2000);
+            });
+    }
+
+    function stopRecording() {
+        recorder.stop();
+        audio_stream.getAudioTracks()[0].stop();
+        showStep(3);
+    }
+
+    function submitFeedback(model, feedback) {
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", BACKEND_URL + "/feedback?audio_id=" + audioId + "&feedback=" + feedback + "&model=" + model);
+        xhr.setRequestHeader("Accept", "application/json");
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+                showStep(1);
+            }
+        });
+
+        xhr.send();
+    }
+
+
+    $('#btnStartRecording').click(function () {
+        showStep(2);
+        startRecording();
     });
 
-
-    $('.btnRL').removeClass('disabled');
-    $('.btnSL').removeClass('disabled');
-    feedback_submissions = 0
-
-  });
-
-  $('.btnFeedback').click(function (event) {
-    const model = $(event.target).data('model');
-    const feedback = $(event.target).data('feedback');
-    const audioId = sessionStorage.getItem('audio_id')
-
-    $('.btn' + model).addClass('disabled');
-
-    submitFeedback(audioId, model, feedback, () => {
-      if (feedback_submissions > 0) {
-        $('.inference-results').removeClass('visible').addClass('hidden');
-        $('.record-audio').removeClass('hidden').addClass('visible');
-      }
-    });
-  });
-
-  function submitFeedback(audioId, model, feedback, callback) {
-    const settings = {
-      "url": BACKEND_URL + "/feedback?audio_id=" + audioId + "&feedback=" + feedback + "&model=" + model,
-      "method": "POST",
-      "timeout": 0,
-      "headers": {
-        "Accept": "application/json"
-      },
-    };
-
-    $.ajax(settings).done(function (r) {
-      callback();
-      $('#frmFileUpload').trigger('reset');
-      loadPerformance();
-      feedback_submissions = feedback_submissions + 1;
-    });
-  }
-
-  function loadPerformance() {
-
-    root.container.children.clear();
-
-    const settings = {
-      "url": BACKEND_URL + "/performance?limit=20",
-      "method": "GET",
-      "timeout": 0,
-      "headers": {
-        "Accept": "application/json"
-      },
-    };
-
-    $.ajax(settings).done(function (r) {
-
-      root.setThemes([am5themes_Animated.new(root)]);
-
-      var chart = root.container.children.push(am5xy.XYChart.new(root, {
-        panY: false, wheelY: "zoomX", layout: root.verticalLayout
-      }));
-
-      // Define data
-      r.sort((a, b) => {
-        return a['episode'] - b['episode']
-      });
-      console.log(r)
-      // const res = $.parseJSON(r)
-      // console.log(res);
-      // var data = res['accuracies'];
-      const data = r;
-
-      // Craete Y-axis
-      let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        renderer: am5xy.AxisRendererY.new(root, {})
-      }));
-
-      // Create X-Axis
-      var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-        maxDeviation: 0.2, renderer: am5xy.AxisRendererX.new(root, {}), categoryField: "episode"
-      }));
-      xAxis.data.setAll(data);
-
-      // Create series
-      var series1 = chart.series.push(am5xy.LineSeries.new(root, {
-        stroke: am5.color('#0D84A5'),
-        name: "RL Model",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "rl_accuracy",
-        categoryXField: "episode",
-        tooltip: am5.Tooltip.new(root, {})
-      }));
-      series1.data.setAll(data);
-
-      series1.strokes.template.setAll({
-        strokeWidth: 2
-      });
-
-      var series2 = chart.series.push(am5xy.LineSeries.new(root, {
-        stroke: am5.color('#FEA056'),
-        name: "SL Model",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "sl_accuracy",
-        categoryXField: "episode"
-      }));
-      series2.data.setAll(data);
-
-      series2.strokes.template.setAll({
-        strokeWidth: 2
-      });
-
-
-      // Add legend
-      var legend = chart.children.push(am5.Legend.new(root, {}));
-      legend.data.setAll(chart.series.values);
+    $('#btnStopRecording').click(function () {
+        showStep(3);
+        stopRecording()
     });
 
-  }
+    $('#btnUploadRecording').click(function () {
+        const blob = new Blob(chunks, {type: "audio/wav"});
+
+        let data = new FormData();
+        data.append('audio_file', blob, 'recording.webm');
+        // Make the HTTP request
+        let oReq = new XMLHttpRequest();
+
+        // POST the data to upload.php
+        oReq.open("POST", BACKEND_URL + '/uploadfile', true);
+        oReq.onload = function (oEvent) {
+            // Data has been uploaded
+            chunks = []
+            const response = JSON.parse(oEvent.target['response'])
+            audioId = response['audio_id']
+            $('#rl_emotion_result').html(emotion_map[response['rl_emotion']])
+            $('#sl_emotion_result').html(emotion_map[response['sl_emotion']])
+            showStep(5)
+
+        };
+        oReq.send(data);
+
+
+        showStep(4);
+    });
+
+    $('#thumbsUp').click(function () {
+        submitFeedback('RL', 'true')
+    });
+
+    $('#thumbsDown').click(function () {
+        submitFeedback('RL', 'false')
+    });
 
 
 })
