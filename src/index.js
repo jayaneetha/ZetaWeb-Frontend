@@ -11,7 +11,7 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
-const BACKEND_URL = "http://rlemotion.cloud.edu.au:8080"
+const BACKEND_URL = "https://rlemotion.cloud.edu.au/api"
 
 const emotion_map = {
     'hap': 'Happy 😊',
