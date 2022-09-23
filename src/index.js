@@ -82,7 +82,6 @@ $(document).ready(function () {
                 recorder.start();
 
                 setTimeout(function () {
-                    console.log("2 sec timeout");
                     stopRecording();
                 }, 2000);
             });
@@ -103,7 +102,6 @@ $(document).ready(function () {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
-                console.log(this.responseText);
                 showStep(1);
             }
         });
@@ -137,11 +135,16 @@ $(document).ready(function () {
         oReq.onload = function (oEvent) {
             // Data has been uploaded
             chunks = []
-            const response = JSON.parse(oEvent.target['response'])
-            audioId = response['audio_id']
-            $('#rl_emotion_result').html(emotion_map[response['rl_emotion']])
-            $('#sl_emotion_result').html(emotion_map[response['sl_emotion']])
-            showStep(5)
+            if (oEvent.target.status === 200) {
+                const response = JSON.parse(oEvent.target['response'])
+                audioId = response['audio_id']
+                $('#rl_emotion_result').html(emotion_map[response['rl_emotion']])
+                $('#sl_emotion_result').html(emotion_map[response['sl_emotion']])
+                showStep(5)
+            } else {
+                $('#error').html(oEvent.target.response)
+                showStep(0)
+            }
 
         };
         oReq.send(data);
@@ -157,6 +160,13 @@ $(document).ready(function () {
     $('#thumbsDown').click(function () {
         submitFeedback('RL', 'false')
     });
+
+
+    $('#refresh').click(function () {
+        location.reload();
+    });
+
+
 
 
 })
