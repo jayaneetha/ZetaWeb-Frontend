@@ -26,6 +26,37 @@ $(document).ready(function () {
     let chunks = [];
     const preview = document.getElementById("audio-playback");
     let audioId = undefined
+    let supported = true
+
+
+    function fnBrowserDetect() {
+
+        let userAgent = navigator.userAgent;
+        let browserName;
+
+        if (userAgent.match(/chrome|chromium|crios/i)) {
+            browserName = "chrome";
+        } else if (userAgent.match(/firefox|fxios/i)) {
+            browserName = "firefox";
+        } else if (userAgent.match(/safari/i)) {
+            browserName = "safari";
+        } else if (userAgent.match(/opr\//i)) {
+            browserName = "opera";
+        } else if (userAgent.match(/edg/i)) {
+            browserName = "edge";
+        } else {
+            browserName = "No browser detection";
+        }
+
+        if (!['chrome', 'firefox'].includes(browserName)) {
+            $('#unsupported_alert').removeClass('hidden').add('visible')
+            supported = false
+        } else {
+            supported = true
+        }
+    }
+
+    fnBrowserDetect()
 
     function showStep(step) {
         for (let i = 0; i < 6; i++) {
@@ -82,8 +113,10 @@ $(document).ready(function () {
 
 
     $('#btnStartRecording').click(function () {
-        showStep(2);
-        startRecording();
+        if (supported) {
+            showStep(2);
+            startRecording();
+        }
     });
 
     $('#btnStopRecording').click(function () {
